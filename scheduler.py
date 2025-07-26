@@ -10,16 +10,12 @@ scheduler = AsyncIOScheduler()
 async def distr_message():
     if message["media"]:
         try:
-            client.send_message(entity=chat_id, message=message["text"])
-
-        except FloodWaitError as flood:
-            logger.error(f"Ошибка! КД на чат/общий флудвейт {flood.seconds}")
-        except Exception as e:
-            logger.error(e)
-    else:
-        try:
-            client.send_file(entity=chat_id, file=message["media"], caption=message["text"])
-
+            await client.send_file(
+                entity=chat_id,
+                file=message["media"],
+                caption=message["text"],
+                parse_mode="html"
+            )
         except ChatWriteForbiddenError as e:
             logger.error("Отсутствует право писать в чат! Возможен мут/бан")
         except UserBannedInChannelError as e:
@@ -27,5 +23,16 @@ async def distr_message():
             scheduler.shutdown(wait=False)
         except FloodWaitError as flood:
             logger.error(f"Ошибка! КД на чат/общий флудвейт {flood.seconds}")
-        except Exception:
+        except Exception as e:
+            logger.error(e)
+    else:
+        try:
+            await client.send_message(
+                entity=chat_id,
+                message=message["text"],
+                parse_mode="html"
+            )
+        except FloodWaitError as flood:
+            logger.error(f"Ошибка! КД на чат/общий флудвейт {flood.seconds}")
+        except Exception as e:
             logger.error(e)

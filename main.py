@@ -14,7 +14,7 @@ async def main():
                  f"[INFO] Спам: {me['spam']}")
     
     # Здесь изменять интервал рассылки. Вписывать - seconds/minutes/hours=X
-    scheduler.add_job(distr_message, 'interval', seconds=10)
+    scheduler.add_job(distr_message, 'interval', minutes=60)
     scheduler.start()
 
     while True:
